@@ -8,3 +8,15 @@
 | janedoe  | password123|
 
 You may create another user through Login page and click the Sign Up link
+
+## Tech Stack
+
+### Backend
+- Django (REST Framework), containerized with Docker
+- MySQL
+- S3 (Images)
+- Deployed on EC2
+
+### Frontend
+- Vue JS
+- Deploy on S3 + Cloudfront
