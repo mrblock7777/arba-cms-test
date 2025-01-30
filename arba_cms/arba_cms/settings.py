@@ -76,8 +76,8 @@ MIDDLEWARE = [
 
 # CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ['127.0.0.1']
-CORS_ALLOWED_ORIGIN = ['http://localhost:3000']
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+CORS_ALLOWED_ORIGIN = os.getenv('DJANGO_CORS_WHITELIST').split(',')
+CORS_ORIGIN_WHITELIST = os.getenv('DJANGO_CORS_WHITELIST').split(',')
 
 ROOT_URLCONF = 'arba_cms.urls'
 
