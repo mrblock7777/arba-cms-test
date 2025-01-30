@@ -75,7 +75,9 @@ MIDDLEWARE = [
 ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1']
+CORS_ALLOWED_ORIGIN = ['http://localhost:3000']
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
 
 ROOT_URLCONF = 'arba_cms.urls'
 
