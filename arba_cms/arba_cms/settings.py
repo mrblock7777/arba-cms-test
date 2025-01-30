@@ -75,7 +75,7 @@ MIDDLEWARE = [
 ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['ec2-13-215-237-63.ap-southeast-1.compute.amazonaws.com']
 CORS_ALLOWED_ORIGIN = os.getenv('DJANGO_CORS_WHITELIST').split(',')
 CORS_ORIGIN_WHITELIST = os.getenv('DJANGO_CORS_WHITELIST').split(',')
 
