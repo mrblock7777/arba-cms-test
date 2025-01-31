@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar height="50" app color="primary" dark>
-      <v-app-bar-nav-icon v-show="!lgAndUp" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-show="!lgAndUp && authStore.isLogggedIn" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link class="text-decoration-none text-white" to="/">
           <span v-if="lgAndUp">Arba</span>
