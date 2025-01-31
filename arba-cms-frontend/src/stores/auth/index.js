@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("login", {
         const { payload } = useJwt(token);
         const user_id = payload.value.user_id;
         const response = await axios
-          .get("/auth/user/" + user_id + "/")
+          .get("/api/auth/user/" + user_id + "/")
           .catch((e) => console.log(e));
         this.currentUser = response.data;
         console.log(this.currentUser);
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore("login", {
     async createUser(userData) {
       this.error = null;
       try {
-          const response = await axios.post('/auth/register/', userData);
+          const response = await axios.post('/api/auth/register/', userData);
           this.user = response.data;
           console.log(this.user);
       } catch (error) {
@@ -45,7 +45,7 @@ export const useAuthStore = defineStore("login", {
   },
     async login(username, password) {
       try {
-        const response = await axios.post("/auth/login/", {
+        const response = await axios.post("/api/auth/login/", {
           username,
           password,
         });

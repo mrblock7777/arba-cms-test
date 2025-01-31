@@ -16,7 +16,7 @@ export const useProfileStore = defineStore('profile', {
             this.loading = true;
             this.error = null;
             try {
-                const response = await axios.put(`/auth/user/${userData.id}/`, userData,{
+                const response = await axios.put(`/api/auth/user/${userData.id}/`, userData,{
                     headers: {
                         Authorization: `Bearer ${authStore.token}`,
                     },
@@ -32,7 +32,7 @@ export const useProfileStore = defineStore('profile', {
         async getUser(userId) {
             this.error = null;
             try {
-                const response = await axios.get(`/auth/user/${userId}/`);
+                const response = await axios.get(`/api/auth/user/${userId}/`);
                 this.user = response.data;
                 console.log(this.user)
             } catch (error) {
