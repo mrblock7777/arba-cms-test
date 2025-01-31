@@ -12,7 +12,7 @@ export const usePostStore = defineStore("post", {
   actions: {
     async deletePost(postId) {
       try {
-        await axios.delete(`/api/v1/imagepost/${postId}/`, {
+        await axios.delete(`/v1/imagepost/${postId}/`, {
           headers: {
             Authorization: `Bearer ${authStore.token}`,
           },
@@ -27,7 +27,7 @@ export const usePostStore = defineStore("post", {
       console.log("formData:", formData);
 
       try {
-        const response = await axios.post("/api/v1/imagepost/", formData, {
+        const response = await axios.post("/v1/imagepost/", formData, {
           headers: {
             Authorization: `Bearer ${authStore.token}`,
           },
@@ -42,7 +42,7 @@ export const usePostStore = defineStore("post", {
     },
     async getPostsByUserId(userId) {
       try {
-        const response = await axios.get(`/api/v1/imagepost/user/${userId}/`);
+        const response = await axios.get(`/v1/imagepost/user/${userId}/`);
         this.posts = response.data.reverse();
         this.posts = await Promise.all(
           this.posts.map(async (post) => {
@@ -64,7 +64,7 @@ export const usePostStore = defineStore("post", {
     },
     async getPost(postId) {
       try {
-        const response = await axios.get(`/api/v1/imagepost/${postId}/`);
+        const response = await axios.get(`/v1/imagepost/${postId}/`);
         this.post = response.data;
         const comments = await this.getComments(this.post.id);
         this.post = {
@@ -81,7 +81,7 @@ export const usePostStore = defineStore("post", {
     },
     async listPost() {
       try {
-        const response = await axios.get("/api/v1/imagepost/");
+        const response = await axios.get("/v1/imagepost/");
 
         this.posts = response.data.reverse();
         this.posts = await Promise.all(
@@ -104,7 +104,7 @@ export const usePostStore = defineStore("post", {
     },
     async deleteComment(commentId){
       try {
-        await axios.delete(`/api/v1/comment/${commentId}/`, {
+        await axios.delete(`/v1/comment/${commentId}/`, {
           headers: {
             Authorization: `Bearer ${authStore.token}`,
           },
@@ -120,7 +120,7 @@ export const usePostStore = defineStore("post", {
       console.log(postId, userId, commentData);
       try {
         await axios.post(
-          `/api/v1/comment/`,
+          `/v1/comment/`,
           {
             image_post_id: postId,
             user: userId,
@@ -141,7 +141,7 @@ export const usePostStore = defineStore("post", {
     },
     async getComments(imagePostId) {
       try {
-        const response = await axios.get(`/api/v1/imagepost/comment/${imagePostId}/`);
+        const response = await axios.get(`/v1/imagepost/comment/${imagePostId}/`);
         return response;
       } catch (error) {
         console.error("Error fetching comments:", error);
