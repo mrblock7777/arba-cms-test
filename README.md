@@ -1,5 +1,5 @@
 ## Live link 
-`http://d73xk6xjtcbvi.cloudfront.net` (Ensure to run in HTTP to avoid Mixed Active Content)
+`http://d73xk6xjtcbvi.cloudfront.net` (Ensure to run in HTTP to avoid Mixed Active Content. If you are running on Brave, turn off Brave shield to avoid forced HTTPS)
 
 ## Credentials
 | username | password | 
@@ -20,3 +20,4 @@ You may create another user through Login page and click the Sign Up link
 ### Frontend
 - Vue JS
 - Deploy on S3 + Cloudfront
+
