@@ -74,8 +74,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
 CORS_ALLOWED_ORIGIN = os.getenv('DJANGO_CORS_WHITELIST').split(',')
 CORS_ORIGIN_WHITELIST = os.getenv('DJANGO_CORS_WHITELIST').split(',')
 
