@@ -1,7 +1,7 @@
 <template>
-  <v-container class="d-flex">
+  <v-container class="d-flex" :class="!lgAndUp ? 'justify-center' : ''">
     <!-- <span class="text-h4">Your Feed</span> -->
-    <div v-if="authStore.isLogggedIn" class="w-33">
+    <div v-show="lgAndUp" v-if="authStore.isLogggedIn" class="w-33">
       <v-card width="300" class="mb-4">
         <v-img src="https://salondesmaires-ain.fr/wp-content/uploads/2014/10/speaker-3.jpg" height="150px"></v-img>
         <v-card-subtitle class="mt-4">{{ authStore.currentUser.first_name }} {{ authStore.currentUser.last_name
@@ -29,7 +29,7 @@
       </v-card>
     </div>
     <div class="d-flex flex-column align-center" :class="authStore.isLogggedIn ? '' : 'w-100'">
-      <v-card width="500" v-for="(post, index) in posts" :key="index" class="mb-4">
+      <v-card :width="lgAndUp ? 500 : mdAndUp ? 400 : 300" v-for="(post, index) in posts" :key="index" class=" mb-4">
         <v-card-title>
           <router-link :to="'/profile/' + post.user">@{{ post.username }}</router-link>
           <v-tooltip text="Remove post">
@@ -102,6 +102,7 @@
 </template>
 
 <script setup>
+import { useDisplay } from 'vuetify'
 import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
@@ -109,6 +110,7 @@ const authStore = useAuthStore();
 const postStore = usePostStore();
 const newComment = ref([]);
 const posts = ref([]);
+const { lgAndUp, mdAndUp, smAndUp } = useDisplay()
 
 const addComment = async (post, comment) => {
   await postStore.createComment(post.id, authStore.currentUser.id, comment);
