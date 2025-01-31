@@ -29,7 +29,7 @@
       </v-card>
     </div>
     <div class="d-flex flex-column align-center" :class="authStore.isLogggedIn ? '' : 'w-100'">
-      <v-card :width="lgAndUp ? 500 : mdAndUp ? 400 : 300" v-for="(post, index) in posts" :key="index" class=" mb-4">
+      <v-card :width="lgAndUp ? 500 : !xs ? 400 : 300" v-for="(post, index) in posts" :key="index" class=" mb-4">
         <v-card-title>
           <router-link :to="'/profile/' + post.user">@{{ post.username }}</router-link>
           <v-tooltip text="Remove post">
@@ -110,7 +110,7 @@ const authStore = useAuthStore();
 const postStore = usePostStore();
 const newComment = ref([]);
 const posts = ref([]);
-const { lgAndUp, mdAndUp, smAndUp } = useDisplay()
+const { lgAndUp, xs } = useDisplay()
 
 const addComment = async (post, comment) => {
   await postStore.createComment(post.id, authStore.currentUser.id, comment);
