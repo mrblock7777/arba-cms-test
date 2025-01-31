@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <div class="d-flex flex-column align-center">
-            <v-card width="500" v-for="(post, index) in posts" :key="index" class="mb-4">
+            <v-card  :width="lgAndUp ? 500 : !xs ? 400 : 300" v-for="(post, index) in posts" :key="index" class="mb-4">
                 <v-card-title>
                     <router-link :to="'/profile/' + post.user">@{{ post.username }}</router-link>
                     <v-tooltip text="Remove post">
@@ -57,12 +57,14 @@
 </template>
 
 <script setup>
+import { useDisplay} from 'vuetify'
 import { ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router'
 import { useProfileStore } from '@/stores/profile';
 import { usePostStore } from '@/stores/post';
 import { useAuthStore } from '@/stores/auth';
 
+const { lgAndUp, xs } = useDisplay()
 const newComment = ref([]);
 const posts = ref([]);
 const profileStore = useProfileStore();
