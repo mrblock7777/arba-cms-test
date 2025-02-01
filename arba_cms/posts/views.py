@@ -101,6 +101,7 @@ class ImagePostAPIView(APIView):
         image_post = ImagePost.objects.get(pk=kwargs.get('id'))
         if not image_post:
             return Response({"error": "Post not found"}, status=404)
+        request.data._mutable = True
         if request.FILES.get('image'):
             image_extension = request.FILES['image'].name.split('.')[-1]
             image_name = f"{uuid.uuid4()}.{image_extension}"
@@ -109,6 +110,8 @@ class ImagePostAPIView(APIView):
             if res.get('ResponseMetadata').get('HTTPStatusCode') != 200:
                 return Response({"error": "Error uploading image to S3"}, status=500)
             request.data['image'] = image_name
+        request.data['user'] = request.user.id
+        request.data._mutable = False
         serializer = ImagePostSerializer(image_post, data=request.data)
         if serializer.is_valid():
             serializer.save()

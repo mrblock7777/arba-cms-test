@@ -37,7 +37,7 @@
             <v-menu activator="parent">
               <v-list>
                 <v-list-item>
-                  <v-list-item-title class="my-2 cursor-pointer">
+                  <v-list-item-title class="my-2 cursor-pointer" @click="$router.push('/post/edit/' + post.id)">
                     Edit Post
                   </v-list-item-title>
                   <v-list-item-title class="my-2 cursor-pointer" @click="deletePost(post.id)">
@@ -115,6 +115,7 @@ import { useDisplay } from 'vuetify'
 import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
+import router from '@/router';
 const authStore = useAuthStore();
 const postStore = usePostStore();
 const newComment = ref([]);

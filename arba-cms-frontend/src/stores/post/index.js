@@ -23,6 +23,20 @@ export const usePostStore = defineStore("post", {
         console.error("Error deleting post:", error);
       }
     },
+    async editPost(formData, postId){
+      try {
+        const response = await axios.put(`/v1/imagepost/${postId}/` , formData, {
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+          },
+        });
+
+        const editedPost = response.data;
+        console.log("editedPost:", editedPost);
+      } catch (error) {
+        console.error("Error creating post:", error);
+      }
+    },
     async createPost(formData) {
       console.log("formData:", formData);
 
