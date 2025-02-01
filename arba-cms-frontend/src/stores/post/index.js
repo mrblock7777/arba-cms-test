@@ -130,6 +130,20 @@ export const usePostStore = defineStore("post", {
         console.error("Error deleting comment:", error);
       }
     },
+    async updateComment(comment){
+      try {
+        const response = await axios.put(`/v1/comment/${comment.id}/` , comment, {
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+          },
+        });
+
+        const editedComment = response.data;
+        console.log("editedComment:", editedComment);
+      } catch (error) {
+        console.error("Error creating comment:", error);
+      }
+    },
     async createComment(postId, userId, commentData) {
       console.log(postId, userId, commentData);
       try {
@@ -155,7 +169,13 @@ export const usePostStore = defineStore("post", {
     },
     async getComments(imagePostId) {
       try {
-        const response = await axios.get(`/v1/imagepost/comment/${imagePostId}/`);
+        let response = await axios.get(`/v1/imagepost/comment/${imagePostId}/`);
+        response.data = response.data.map(comment => {
+          return {
+            ...comment,
+            editable: false
+          }
+        })
         return response;
       } catch (error) {
         console.error("Error fetching comments:", error);

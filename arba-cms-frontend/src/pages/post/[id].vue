@@ -16,14 +16,38 @@
                         <v-list-item-content>
                             <v-list-item-title>{{ comment.username }}</v-list-item-title>
                             <v-list-item-subtitle>
-                                {{ comment.text }}
-                                <v-tooltip text="Remove comment">
-                                    <template v-slot:activator="{ props }">
-                                        <v-btn v-bind="props" variant="plain" class="float-right"
-                                            v-if="authStore.currentUser.id === comment.user" color="default"
-                                            icon="mdi-trash-can" @click="deleteComment(comment)"></v-btn>
-                                    </template>
-                                </v-tooltip>
+                                <span v-show="!comment.editable">{{ comment.text }}</span>
+                                <span v-show="comment.editable">
+                                    <v-text-field v-if="authStore.isLogggedIn" v-model="comment.text"
+                                        label="Edit Comment" @keyup.enter="editComment(comment)">
+                                        <template #append-inner>
+                                            <v-btn color="primary" variant="plain" @click="comment.editable = false">
+                                                <v-icon>mdi-close</v-icon>
+                                            </v-btn>
+                                            <v-btn color="primary" variant="plain" @click="editComment(comment)">
+                                                <v-icon>mdi-send</v-icon>
+                                            </v-btn>
+                                        </template>
+                                    </v-text-field>
+                                </span>
+                                <v-btn v-if="authStore.currentUser.id === comment.user" class="float-right"
+                                    variant="text">
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                    <v-menu activator="parent">
+                                        <v-list>
+                                            <v-list-item>
+                                                <v-list-item-title class="my-2 cursor-pointer"
+                                                    @click="comment.editable = true">
+                                                    Edit Comment
+                                                </v-list-item-title>
+                                                <v-list-item-title class="my-2 cursor-pointer"
+                                                    @click="deleteComment(comment)">
+                                                    Delete Comment
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </v-btn>
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
@@ -56,7 +80,14 @@ const newComment = ref('');
 
 const deleteComment = async (comment) => {
     await postStore.deleteComment(comment.id);
-    post.value.comments = post.value.comments.filter(c => c.id !== comment.id);
+    // post.value.comments = post.value.comments.filter(c => c.id !== comment.id);
+    await getPost()
+}
+const editComment = async (comment) => {
+    await postStore.updateComment(comment);
+    // post.value.comments = post.value.comments.find(c => c.id === comment.id).text = comment.text;
+    // post.value.comments = post.value.comments.find(c => c.id === comment.id).editable = false;
+    await getPost()
 }
 const addComment = async () => {
     await postStore.createComment(route.params.id, authStore.currentUser.id, newComment.value);

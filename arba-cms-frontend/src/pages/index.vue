@@ -63,14 +63,35 @@
               <v-list-item-content>
                 <v-list-item-title>{{ comment.username }}</v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ comment.text }}
-                  <v-tooltip text="Remove comment">
-                    <template v-slot:activator="{ props }">
-                      <v-btn v-bind="props" variant="plain" class="float-right"
-                        v-if="authStore.currentUser.id === comment.user" color="default" icon="mdi-trash-can"
-                        @click="deleteComment(comment)"></v-btn>
-                    </template>
-                  </v-tooltip>
+                  <span v-show="!comment.editable">{{ comment.text }}</span>
+                  <span v-show="comment.editable">
+                    <v-text-field v-if="authStore.isLogggedIn" v-model="comment.text" label="Edit Comment"
+                      @keyup.enter="editComment(comment)">
+                      <template #append-inner>
+                        <v-btn color="primary" variant="plain" @click="comment.editable = false">
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-btn color="primary" variant="plain" @click="editComment(comment)">
+                          <v-icon>mdi-send</v-icon>
+                        </v-btn>
+                      </template>
+                    </v-text-field>
+                  </span>
+                  <v-btn v-if="authStore.currentUser.id === comment.user" class="float-right" variant="text">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                    <v-menu activator="parent">
+                      <v-list>
+                        <v-list-item>
+                          <v-list-item-title class="my-2 cursor-pointer" @click="comment.editable = true">
+                            Edit Comment
+                          </v-list-item-title>
+                          <v-list-item-title class="my-2 cursor-pointer" @click="deleteComment(comment)">
+                            Delete Comment
+                          </v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </v-btn>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -78,14 +99,35 @@
               <v-list-item-content>
                 <v-list-item-title>{{ post.comments[i].username }}</v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ post.comments[i].text }}
-                  <v-tooltip text="Remove comment">
-                    <template v-slot:activator="{ props }">
-                      <v-btn v-bind="props" variant="plain" class="float-right"
-                        v-if="authStore.currentUser.id === post.comments[i].user" color="default" icon="mdi-trash-can"
-                        @click="deleteComment(post.comments[i])"></v-btn>
-                    </template>
-                  </v-tooltip>
+                  <span v-show="!post.comments[i].editable">{{ post.comments[i].text }}</span>
+                  <span v-show="post.comments[i].editable">
+                    <v-text-field v-if="authStore.isLogggedIn" v-model="post.comments[i].text" label="Edit Comment"
+                      @keyup.enter="editComment(post.comments[i])">
+                      <template #append-inner>
+                        <v-btn color="primary" variant="plain" @click="post.comments[i].editable = false">
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-btn color="primary" variant="plain" @click="editComment(post.comments[i])">
+                          <v-icon>mdi-send</v-icon>
+                        </v-btn>
+                      </template>
+                    </v-text-field>
+                  </span>
+                  <v-btn v-if="authStore.currentUser.id === post.comments[i].user" class="float-right" variant="text">
+                    <v-icon>mdi-dots-vertical</v-icon>
+                    <v-menu activator="parent">
+                      <v-list>
+                        <v-list-item>
+                          <v-list-item-title class="my-2 cursor-pointer" @click="post.comments[i].editable = true">
+                            Edit Comment
+                          </v-list-item-title>
+                          <v-list-item-title class="my-2 cursor-pointer" @click="deleteComment(post.comments[i])">
+                            Delete Comment
+                          </v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </v-btn>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -115,11 +157,12 @@ import { useDisplay } from 'vuetify'
 import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
-import router from '@/router';
+
 const authStore = useAuthStore();
 const postStore = usePostStore();
 const newComment = ref([]);
 const posts = ref([]);
+
 const { lgAndUp, xs } = useDisplay()
 
 const addComment = async (post, comment) => {
@@ -129,10 +172,16 @@ const addComment = async (post, comment) => {
     text: comment
   });
 }
+const editComment = async (comment) => {
+  await postStore.updateComment(comment);
+  posts.value.find(p => p.id === comment.image_post).comments.find(c => c.id === comment.id).text = comment.text;
+  posts.value.find(p => p.id === comment.image_post).comments.find(c => c.id === comment.id).editable = false;
+}
 const deleteComment = async (comment) => {
   if (confirm('Are you sure you want to delete this comment?')) {
     await postStore.deleteComment(comment.id);
-    posts.value.find(p => p.id === comment.post).comments = posts.value.find(p => p.id === comment.post).comments.filter(c => c.id !== comment.id)
+    // posts.value.find(p => p.id === comment.image_post).comments = posts.value.find(p => p.id === comment.post).comments.filter(c => c.id !== comment.id)
+    await getPosts()
   }
 }
 const getPosts = async () => {
