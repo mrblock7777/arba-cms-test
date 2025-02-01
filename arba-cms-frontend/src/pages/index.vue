@@ -32,12 +32,21 @@
       <v-card :width="lgAndUp ? 500 : !xs ? 400 : 300" v-for="(post, index) in posts" :key="index" class=" mb-4">
         <v-card-title>
           <router-link :to="'/profile/' + post.user">@{{ post.username }}</router-link>
-          <v-tooltip text="Remove post">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" v-if="authStore.currentUser.id === post.user" class="float-right" color="primary"
-                @click="deletePost(post.id)" icon="mdi-trash-can"></v-btn>
-            </template>
-          </v-tooltip>
+          <v-btn v-if="authStore.currentUser.id === post.user" class="float-right" variant="text">
+            <v-icon>mdi-dots-vertical</v-icon>
+            <v-menu activator="parent">
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title class="my-2 cursor-pointer">
+                    Edit Post
+                  </v-list-item-title>
+                  <v-list-item-title class="my-2 cursor-pointer" @click="deletePost(post.id)">
+                    Delete Post
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-btn>
         </v-card-title>
         <v-img class="cursor-pointer" :src="post.imageURL" height="200px"
           @click="$router.push('/post/' + post.id)"></v-img>
@@ -120,8 +129,10 @@ const addComment = async (post, comment) => {
   });
 }
 const deleteComment = async (comment) => {
-  await postStore.deleteComment(comment.id);
-  posts.value.find(p => p.id === comment.post).comments = posts.value.find(p => p.id === comment.post).comments.filter(c => c.id !== comment.id)
+  if (confirm('Are you sure you want to delete this comment?')) {
+    await postStore.deleteComment(comment.id);
+    posts.value.find(p => p.id === comment.post).comments = posts.value.find(p => p.id === comment.post).comments.filter(c => c.id !== comment.id)
+  }
 }
 const getPosts = async () => {
   await postStore.listPost();
@@ -129,8 +140,10 @@ const getPosts = async () => {
 }
 
 const deletePost = async (postId) => {
-  await postStore.deletePost(postId);
-  posts.value = posts.value.filter(p => p.id !== postId);
+  if (confirm('Are you sure you want to delete this post?')) {
+    await postStore.deletePost(postId);
+    posts.value = posts.value.filter(p => p.id !== postId);
+  }
 }
 onBeforeMount(() => {
   getPosts();
