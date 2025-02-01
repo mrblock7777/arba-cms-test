@@ -101,6 +101,14 @@ class ImagePostAPIView(APIView):
         image_post = ImagePost.objects.get(pk=kwargs.get('id'))
         if not image_post:
             return Response({"error": "Post not found"}, status=404)
+        if request.FILES.get('image'):
+            image_extension = request.FILES['image'].name.split('.')[-1]
+            image_name = f"{uuid.uuid4()}.{image_extension}"
+            assumed_role_credentials = assume_role(os.getenv('AWS_ROLE_ARN'), 'arba_cms_assume_role')
+            res = upload_image_to_s3(request.FILES['image'], image_name, request.user.id, assumed_role_credentials)
+            if res.get('ResponseMetadata').get('HTTPStatusCode') != 200:
+                return Response({"error": "Error uploading image to S3"}, status=500)
+            request.data['image'] = image_name
         serializer = ImagePostSerializer(image_post, data=request.data)
         if serializer.is_valid():
             serializer.save()
